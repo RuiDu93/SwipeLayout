@@ -51,6 +51,15 @@
         </entry>
       </file>
       <file leaf-file-name="RecyclerView.java" pinned="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/../../sdk/extras/android/m2repository/com/android/support/recyclerview-v7/22.2.1/recyclerview-v7-22.2.1-sources.jar!/android/support/v7/widget/RecyclerView.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="8098" column="23" selection-start-line="8098" selection-start-column="23" selection-end-line="8098" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="MCallBack.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/testRecycler/src/main/java/bupt/freeshare/myapplication/MCallBack.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -2257,8 +2266,6 @@
       <list>
         <option value="$PROJECT_DIR$/testRecycler/src/main/res/layout/m_layout.xml" />
         <option value="$PROJECT_DIR$/UltimateRecyclerView.iml" />
-        <option value="$PROJECT_DIR$/testRecycler/src/main/java/bupt/freeshare/myapplication/MainActivity.java" />
-        <option value="$PROJECT_DIR$/testRecycler/src/main/java/bupt/freeshare/myapplication/MCallBack.java" />
         <option value="$PROJECT_DIR$/swipelayoutlibrary/src/main/java/bupt/freeshare/swipelayoutlibrary/SwipeLayout.java" />
         <option value="$PROJECT_DIR$/testRecycler/src/main/java/bupt/freeshare/myapplication/MCallBack.java" />
         <option value="$PROJECT_DIR$/testRecycler/src/main/java/bupt/freeshare/myapplication/MainActivity.java" />

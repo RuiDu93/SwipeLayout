@@ -41,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //first we need some data
         ArrayList<String> mLists = new ArrayList<String>();
         for(int i=0;i<30;i++){
@@ -73,6 +74,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
+
+
+
     /**
      * core class to combine view and data
      */
@@ -92,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
         public MAdapter(ArrayList<String> mLists){
             this.mLists = mLists;
         }
+
+
 
 
         @Override
@@ -190,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
 
 
