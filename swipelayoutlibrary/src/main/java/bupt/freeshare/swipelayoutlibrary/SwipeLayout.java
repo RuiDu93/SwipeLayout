@@ -25,6 +25,11 @@ public class SwipeLayout extends FrameLayout {
      */
     private ViewGroup childView;
 
+    /**
+     * the underlyingView
+     */
+    private ViewGroup underlyingView;
+
 
     private OnSwipeListener mOnSwipeListener;
 
@@ -57,24 +62,12 @@ public class SwipeLayout extends FrameLayout {
      */
     private int  closeMargin = 20;
 
-    /**
-     * the margin to be thought as cancel delete in px
-     * when it acts from CLOSE to OPEN,this value allows user's slight drag be thought as cancel action
-     */
-    private int  deleteMargin = 20;
 
 
 
     public enum State{
-        /**
-         * when the state is OPEN,user sliding the child to the right side would be thought as a close action
-         */
-        Open,
 
-        /**
-         *  when the state is CLOSE,user sliding the child to the right side would be thought as a delete action
-         */
-        Close
+        Open, Close
     }
 
     /**
@@ -82,8 +75,9 @@ public class SwipeLayout extends FrameLayout {
      * these method will be called before the slide animations.
      */
     public interface OnSwipeListener{
-        public void onDelete();
+        public void onStartOpen();
         public void onOpen();
+        public void onStartClose();
         public void onClose();
     }
 
@@ -141,6 +135,7 @@ public class SwipeLayout extends FrameLayout {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Log.d(TAG, "SwipeLayout$onTouchEvent: "+mState.toString());
         mViewDragHelper.processTouchEvent(event);
         return true;
     }
@@ -151,6 +146,7 @@ public class SwipeLayout extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        underlyingView = (ViewGroup) this.getChildAt(0);
         childView = (ViewGroup) this.getChildAt(1);
     }
 
@@ -159,12 +155,17 @@ public class SwipeLayout extends FrameLayout {
      * execute the smoothly slide animation and change the state
      */
     public void close(){
+        Log.d(TAG, "SwipeLayout$close(): "+mState.toString());
         mState = State.Close;
+
         if(mOnSwipeListener!=null){
-            mOnSwipeListener.onClose();
+            mOnSwipeListener.onStartClose();
         }
         if(mViewDragHelper.smoothSlideViewTo(childView, 0, 0)){
             ViewCompat.postInvalidateOnAnimation(this);
+        }
+        if(mOnSwipeListener!=null){
+            mOnSwipeListener.onClose();
         }
     }
 
@@ -172,30 +173,21 @@ public class SwipeLayout extends FrameLayout {
      * execute the smoothly slide animation and change the state
      */
     public void open(){
+        Log.d(TAG, "SwipeLayout$open: before:"+mState.toString());
         mState = State.Open;
+        Log.d(TAG, "SwipeLayout$open() "+mState.toString());
+        if(mOnSwipeListener!=null){
+            mOnSwipeListener.onStartOpen();
+        }
+        if(mViewDragHelper.smoothSlideViewTo(childView, -overlapLength, 0)){
+        ViewCompat.postInvalidateOnAnimation(this);
+        }
         if(mOnSwipeListener!=null){
             mOnSwipeListener.onOpen();
         }
-        if(mViewDragHelper.smoothSlideViewTo(childView, -overlapLength, 0)){
-            ViewCompat.postInvalidateOnAnimation(this);
-        }
+
     }
 
-    /**
-     * if  mOnSwipeListener is not set,we just call close() method
-     */
-    public void delete(){
-
-        if(mOnSwipeListener!=null){
-            mOnSwipeListener.onDelete();
-        }else{
-            Log.d(TAG, "delete: need an implementation!");
-            close();
-        }
-
-        //reset the state
-        mState = State.Close;
-    }
 
     //works with the smoothSlideViewTo method
     @Override
@@ -236,19 +228,13 @@ public class SwipeLayout extends FrameLayout {
         public int clampViewPositionHorizontal(View child, int left, int dx) {
 
             int maxLeftLeght = overlapLength+openMargin;
-
+            Log.d(TAG, "SwipeLayout$clampViewPositionHorizontal: "+mState.toString());
             if(dx>0){
-                if(mState.equals(mState.Open)){
-
-                    if(left>0){
-                        return 0;
-                    }else{
-                        return left;
-                    }
+                if(left>0){
+                    return 0;
                 }else{
                     return left;
-                }
-
+                    }
             }else{
                 if(left<-maxLeftLeght){
                     return -maxLeftLeght;
@@ -272,24 +258,14 @@ public class SwipeLayout extends FrameLayout {
                                    float yvel) {
             super.onViewReleased(releasedChild, xvel, yvel);
 
-            //to see if its a swipe to right action at close state
-            if(releasedChild.getLeft()>0){
-                //to see if its beyond the deleteMargin
-                if(releasedChild.getLeft()>deleteMargin){
-                    delete();
-                }else{
-                    close();
-                }
-            //if it's not a delete action,we should keep an eye on the gesture
-            }else{
                 //to see if its a close action
                 if(releasedChild.getLeft()>-closeMargin||
-                        (releasedChild.getLeft()>-(overlapLength-openMargin)&&(xvel>0))){
+                        (xvel>0)){
                     close();
                 }else{
                     open();
                 }
-            }
+
 
         }
     }
@@ -322,13 +298,6 @@ public class SwipeLayout extends FrameLayout {
          */
         private int  closeMargin = 20;
 
-        /**
-         * the margin to be thought as cancel delete in px
-         * when it acts from CLOSE to OPEN,this value allows user's slight drag be thought as cancel action
-         */
-        private int  deleteMargin = 20;
-
-
 
 
         /**
@@ -348,7 +317,7 @@ public class SwipeLayout extends FrameLayout {
             this.overlapLength = overlapLength;
             this.openMargin = margins;
             this.closeMargin = margins;
-            this.deleteMargin = margins;
+
         }
 
         /**
@@ -356,13 +325,12 @@ public class SwipeLayout extends FrameLayout {
          * @param overlapLength
          * @param openMargin
          * @param closeMargin
-         * @param deleteMargin
          */
-        public SwipeConfig(int overlapLength,int openMargin,int closeMargin,int deleteMargin){
+        public SwipeConfig(int overlapLength,int openMargin,int closeMargin){
             this.overlapLength = overlapLength;
             this.openMargin = openMargin;
             this.closeMargin = closeMargin;
-            this.deleteMargin = deleteMargin;
+
         }
 
         public int getOverlapLength() {
@@ -389,13 +357,7 @@ public class SwipeLayout extends FrameLayout {
             this.closeMargin = closeMargin;
         }
 
-        public int getDeleteMargin() {
-            return deleteMargin;
-        }
 
-        public void setDeleteMargin(int deleteMargin) {
-            this.deleteMargin = deleteMargin;
-        }
     }
 
 }

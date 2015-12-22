@@ -2,6 +2,7 @@ package bupt.freeshare.myapplication;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,32 +13,37 @@ import java.util.Collections;
 public class MCallBack extends ItemTouchHelper.Callback {
 
 
-    MainActivity.MAdapter mAdapter;
+    MAdapter mAdapter;
     ArrayList<String> mLists;
-    public MCallBack(MainActivity.MAdapter mAdapter, ArrayList<String> mLists){
+    public MCallBack(MAdapter mAdapter, ArrayList<String> mLists){
         this.mLists = mLists;
         this.mAdapter = mAdapter;
     }
 
     /**
-     * since its swipe to miss method conflicts with dealing events in
-     * SwipeLayout,we should disabled this function
+     * when it comes a swiping-to-right action,we should see if it
+     * can be deleted by querying adapter
      * @return
      */
     @Override
     public boolean isItemViewSwipeEnabled() {
-        return false;
+        Log.d("test", "isItemViewSwipeEnabled: "+mAdapter.canDelete());
+        return mAdapter.canDelete();
     }
 
     /**
-     * we can do nothing
+     * you should be aware of the difference between layoutposition and adapterposition
      * @param viewHolder
      * @param direction
      */
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+        mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+        mLists.remove(viewHolder.getLayoutPosition());
 
     }
+
+
 
 
     @Override
@@ -47,7 +53,7 @@ public class MCallBack extends ItemTouchHelper.Callback {
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        return makeMovementFlags(ItemTouchHelper.DOWN|ItemTouchHelper.UP,0);
+        return makeMovementFlags(ItemTouchHelper.DOWN|ItemTouchHelper.UP,ItemTouchHelper.RIGHT);
     }
 
     /**
