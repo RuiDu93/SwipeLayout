@@ -13,7 +13,8 @@ well,it just like this:
 
 ![swipepic](https://github.com/RuiDu93/SwipeLayout/blob/master/pic/swipe.gif)
 ###How to use
-* just donwload the source code and complie it, using it as normal layout
+* just donwload the source code and complie it, using it as normal layout.
+* I strongly recommend you RecyclerView with this layout,and I give you an example of how to deal with more button issue and delete issue simultaneously,which needs the support of the class of MApdater and ItemTouchHelper
 
 ###ATTENTION!!
 &emsp;since it assumes its child layouts are one covered by another, you should write two child in the XML file otherwise it could be wrong
