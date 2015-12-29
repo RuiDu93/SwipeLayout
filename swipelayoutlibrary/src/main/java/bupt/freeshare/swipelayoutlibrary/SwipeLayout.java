@@ -89,6 +89,19 @@ public class SwipeLayout extends FrameLayout {
         mOnSwipeListener = onSwipeListener;
     }
 
+
+    /**
+     * configurate some params
+     * @param swipeConfig
+     */
+    public void configSwipe(SwipeConfig swipeConfig){
+
+        this.overlapLength = swipeConfig.getOverlapLength();
+        this.closeMargin = swipeConfig.getCloseMargin();
+        this.openMargin = swipeConfig.getOpenMargin();
+    }
+
+
     /**
      * get the current state
      * @return
@@ -274,7 +287,7 @@ public class SwipeLayout extends FrameLayout {
     /**
      * to configurate some parameters
      */
-    class SwipeConfig {
+    public static class SwipeConfig {
 
         /**
          * the length of overlap part in px,
